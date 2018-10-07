@@ -26,6 +26,6 @@ class EmeKernel
      */
     public function end()
     {
-        //
+        echo sprintf('<!-- eme HTTP 200 OK %s -->', date('Y'));
     }
 }
