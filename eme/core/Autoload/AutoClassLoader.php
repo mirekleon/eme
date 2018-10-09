@@ -50,15 +50,19 @@ class AutoClassLoader
     /**
      *
      */
-    public function loadClass($class, $reSearch = true)
+    public function loadClass($class)
     {
         if ($file = $this->getFile($class)) {
             loadFile($file);
             return true;
         }
 
-        if (true === $reSearch) {
-            dump_autoloader(CLASS_MAP_PATHS);
+        $classMap = dump_autoloader(CLASS_MAP_PATHS);
+        $this->addClassMap($classMap);
+        // give one last try, dump classes and check before throw the exception
+        if ($file = $this->getFile($class)) {
+            loadFile($file);
+            return true;
         }
 
         throw new AutoLoadException("Class {$class} not found");

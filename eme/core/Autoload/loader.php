@@ -19,6 +19,7 @@ if (!function_exists('dump_autoloader')) {
         $classes = $classMapGenarator->getClassMap();
         \Eme\Core\Autoload\ClassMapCreator::create(CLASS_MAPPER_PATH, $classes);
         register_autoloader($paths);
+        return $classes;
     }
 }
 /**
@@ -31,7 +32,7 @@ if (!function_exists('register_autoloader')) {
             dump_autoloader($paths);
         }
         if (file_exists(CLASS_MAPPER_PATH)) {
-            @include EME_ROOT_PATH . '/core/Autoload/AutoClassLoader.php';
+            include_once EME_ROOT_PATH . '/core/Autoload/AutoClassLoader.php';
             $classMap = include CLASS_MAPPER_PATH;
             $loader = new \Eme\Core\Autoload\AutoClassLoader();
             $loader->addClassMap($classMap);
