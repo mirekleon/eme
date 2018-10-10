@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * This file is part of Eme.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Eme\Core\Autoload;
 
 use Eme\Core\Autoload\ClassMapGenarator;
@@ -7,48 +14,71 @@ use Eme\Core\Autoload\Exception\AutoLoadException;
 use Eme\Core\Autoload\Exception\InvalidArgumentException;
 
 /**
- *
+ * Autoload class
  */
 class AutoClassLoader
 {
     /**
+     * @access private
      *
+     * @var Array
      */
     private $namespaces = [];
     /**
+     * @access private
      *
+     * @var Array
      */
     private $classMap = [];
     /**
+     * @access public
+     * Get registered classes
      *
+     * @return Array
      */
     public function getClassMap()
     {
         return $this->classMap;
     }
     /**
+     * @access public
+     * Add class map
      *
+     * @param Array $classMap - mapped classes
+     * @return Void
      */
     public function addClassMap(array $classMap = [])
     {
-        $this->classMap = $classMap;
+        $this->classMap = array_merge($this->classMap, $classMap);
     }
     /**
+     * @access public
+     * Register class loader
      *
+     * @param Boolean $prepend - prepend path
+     * @return Void
      */
     public function register($prepend = false)
     {
         spl_autoload_register(array($this, 'loadClass'), true, $prepend);
     }
     /**
+     * @access public
+     * Unregister class loader
      *
+     * @return Void
      */
     public function unregister()
     {
         spl_autoload_unregister(array($this, 'loadClass'));
     }
     /**
+     * @access public
+     * Load class
      *
+     * @param String $class - class name
+     * @return Boolean
+     * @throws AutoLoadException
      */
     public function loadClass($class)
     {
@@ -59,7 +89,7 @@ class AutoClassLoader
 
         $classMap = dump_autoloader(CLASS_MAP_PATHS);
         $this->addClassMap($classMap);
-        // give one last try, dump classes and check before throw the exception
+        // give one last try, dump classes and search again before throw the exception
         if ($file = $this->getFile($class)) {
             loadFile($file);
             return true;
@@ -68,7 +98,13 @@ class AutoClassLoader
         throw new AutoLoadException("Class {$class} not found");
     }
     /**
+     * @access public
+     * Add namespace
      *
+     * @param String $namespace - namespace
+     * @param String $path - namespace
+     * @return $this
+     * @throws InvalidArgumentException
      */
     public function addNamespace($namespace, $path)
     {
@@ -84,7 +120,11 @@ class AutoClassLoader
         return $this;
     }
     /**
+     * @access public
+     * Get file
      *
+     * @param String $class - file path
+     * @return Mixed
      */
     public function getFile($class)
     {
@@ -92,7 +132,11 @@ class AutoClassLoader
         return $file;
     }
     /**
+     * @access public
+     * Search for class
      *
+     * @param String $class - file path
+     * @return Mixed
      */
     public function findFile($class)
     {
@@ -127,11 +171,12 @@ class AutoClassLoader
     }
 }
 /**
- *
+ * Include file
  */
 if (!function_exists('loadFile')) {
     function loadFile($file)
     {
-        include $file;
+        // do not expose error here
+        @include $file;
     }
 }
