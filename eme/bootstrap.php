@@ -24,3 +24,10 @@ $eme = new Eme\Core\EmeKernel;
 $eme->handle();
 $eme->send();
 $eme->end();
+
+$request = Eme\Core\Http\Request::create();
+echo "<pre>";
+
+//print_r($request);
+$request->setTrustedProxies([], true);
+print_r($request->server->all());
